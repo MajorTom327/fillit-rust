@@ -35,9 +35,12 @@ impl Parser {
   }
 
   fn parse_content(content: String) -> Fillit {
-    let groups: Vec<&str> = content.split("\n\n").collect();
+    let groups: Vec<&str> = content.split("\n\n")
+      .into_iter().filter(|line| !line.is_empty()).collect::<Vec<&str>>();
 
     let len: u32 = groups.len().try_into().unwrap();
+
+    dbg!(&groups);
 
     if !SIZE_INTERVAL.contains(&(len)) {
       panic!("Seem like the len of items are invalid");
@@ -72,7 +75,7 @@ mod tests {
 
   #[test]
   fn test_parser() {
-    let fillit = Parser::parse_content("1\n\n##..\n##..\n....\n....".to_string());
+    let fillit = Parser::parse_content("##..\n##..\n....\n....".to_string());
     assert_eq!(fillit.tetriminos.len(), 1);
     let tetrimino = &fillit.tetriminos[0];
 
@@ -80,27 +83,9 @@ mod tests {
   }
 
   #[test]
-  #[should_panic(expected = "The number of tetriminos expected is invalid")]
-  fn test_invalid_numbers() {
-    Parser::parse_content("0\n\n##..\n##..\n....\n....".to_string());
-  }
-
-  #[test]
   #[should_panic(expected = "Seem like the len of items are invalid")]
   fn test_invalid_numbers_of_tetriminos() {
-    Parser::parse_content("1\n".to_string());
-  }
-
-  #[test]
-  #[should_panic(expected = "The number of tetriminos expected is invalid")]
-  fn test_invalid_numbers_too_large() {
-    Parser::parse_content("27\n\n##..\n##..\n....\n....".to_string());
-  }
-
-  #[test]
-  #[should_panic(expected = "The number of tetriminos and the expected amount are not the same")]
-  fn test_number_expected_and_real_not_matching() {
-    Parser::parse_content("1\n\n##..\n##..\n....\n....\n\n##..\n##..\n....\n....".to_string());
+    Parser::parse_content("".to_string());
   }
 
   #[test]

@@ -174,12 +174,8 @@ use super::*;
     grid.insert(0, 0, &tetrimino).unwrap();
     let tetrimino = tetrimino::Tetrimino::from_shape('B', [[1,1,0,0], [1,1,0,0], [0,0,0,0], [0,0,0,0]]);
 
-    grid.insert(0, 0, &tetrimino).unwrap();
-
-    assert_eq!(grid.get(0, 0), 'A');
-    assert_eq!(grid.get(1, 0), 'A');
-    assert_eq!(grid.get(0, 1), 'A');
-    assert_eq!(grid.get(1, 1), 'A');
+    let result = grid.insert(0, 0, &tetrimino);
+    assert_eq!(result, Err("Cannot place the tetrimino"));
   }
 
   #[test]

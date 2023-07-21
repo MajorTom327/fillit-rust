@@ -159,7 +159,7 @@ use super::*;
     let mut grid = Grid::new(10, 20);
     let tetrimino = tetrimino::Tetrimino::from_shape('A', [[1,1,0,0], [1,1,0,0], [0,0,0,0], [0,0,0,0]]);
 
-    grid.insert(0, 0, &tetrimino);
+    let _ = grid.insert(0, 0, &tetrimino);
     assert_eq!(grid.get(0, 0), 'A');
     assert_eq!(grid.get(1, 0), 'A');
     assert_eq!(grid.get(0, 1), 'A');

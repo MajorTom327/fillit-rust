@@ -40,8 +40,6 @@ impl Parser {
 
     let len: u32 = groups.len().try_into().unwrap();
 
-    dbg!(&groups);
-
     if !SIZE_INTERVAL.contains(&(len)) {
       panic!("Seem like the len of items are invalid");
     }

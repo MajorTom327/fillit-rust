@@ -1,18 +1,24 @@
-use clap::Parser;
-
 mod grid;
 mod tetrimino;
-mod cli;
+pub mod cli;
 mod parser;
 mod fillit;
 
 
-pub fn run() {
-  let args = cli::Cli::parse();
+pub fn run(content: String) {
+  let fillit = solve_fillit(String::from(content));
+  fillit.print();
+}
 
-  let parser = parser::Parser::new(args.input);
-  let mut fillit = parser.parse();
+pub fn solve_fillit(content: String) -> fillit::Fillit {
+  let parser = parser::Parser::new(content);
+  let mut fillit = parser.parse_content();
 
   fillit.solve();
-  fillit.print();
+
+  fillit.grid.cells = fillit.grid.cells.iter().map(|c| match c {
+    ' ' => '.',
+    _ => *c
+  }).collect::<Vec<char>>();
+  fillit
 }

@@ -1,40 +1,25 @@
-use std::{
-  fs::File,
-  io::Read, ops::Range,
-};
+use std::ops::Range;
 
 use crate::tetrimino::Tetrimino;
 use crate::fillit::Fillit;
 
 pub struct Parser {
-  file: std::path::PathBuf
+  file_content: String
 }
 
 const SIZE_INTERVAL: Range<u32> = 1..27;
 
 impl Parser {
-
-  pub fn new(file: std::path::PathBuf) -> Self {
+  pub fn new(file_content: String) -> Self {
     Self {
-      file
+      file_content: file_content.clone()
     }
   }
 
-  fn read_file(&self) -> Fillit {
-    let file = File::open(self.file.to_string_lossy().to_string());
 
-    let mut file = match file {
-      Ok(file) => file,
-      Err(err) => panic!("Something is wrong, I can fillit...\n{}", err)
-    };
+  pub fn parse_content(&self) -> Fillit {
+    let content = &self.file_content;
 
-    let mut content = String::new();
-    file.read_to_string(&mut content).unwrap();
-
-    Parser::parse_content(content)
-  }
-
-  fn parse_content(content: String) -> Fillit {
     let groups: Vec<&str> = content.split("\n\n")
       .into_iter().filter(|line| !line.is_empty()).collect::<Vec<&str>>();
 
@@ -60,10 +45,6 @@ impl Parser {
     Fillit::new(tetriminos)
 
   }
-
-  pub fn parse(&self) -> Fillit {
-    self.read_file()
-  }
 }
 
 #[cfg(test)]
@@ -73,7 +54,8 @@ mod tests {
 
   #[test]
   fn test_parser() {
-    let fillit = Parser::parse_content("##..\n##..\n....\n....".to_string());
+    let parser = Parser::new("##..\n##..\n....\n....".to_string());
+    let fillit = parser.parse_content();
     assert_eq!(fillit.tetriminos.len(), 1);
     let tetrimino = &fillit.tetriminos[0];
 
@@ -83,7 +65,8 @@ mod tests {
   #[test]
   #[should_panic(expected = "Seem like the len of items are invalid")]
   fn test_invalid_numbers_of_tetriminos() {
-    Parser::parse_content("".to_string());
+    let parser = Parser::new("".to_string());
+    let _fillit = parser.parse_content();
   }
 
   #[test]

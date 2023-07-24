@@ -28,9 +28,20 @@ impl Fillit {
     let mut solved: bool = true;
     for tetrimino in self.tetriminos.iter() {
       let mut placed = false;
+      let height = if self.grid.height < tetrimino.height {
+        tetrimino.height
+      } else {
+        self.grid.height - tetrimino.height + 1
+      };
 
-      for y in 0..self.grid.height - tetrimino.height + 1 {
-        for x in 0..self.grid.width - tetrimino.width + 1 {
+      for y in 0..height {
+        let width = if self.grid.width < tetrimino.width {
+          tetrimino.width
+        } else {
+          self.grid.width - tetrimino.width + 1
+        };
+
+        for x in 0..width {
           let res = self.grid.insert(x, y, tetrimino);
           match res {
             Ok(_) => {
